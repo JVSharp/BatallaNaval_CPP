@@ -41,8 +41,6 @@ void connectToServer() {
         closesocket(clientSocket);
         return;
     }
-
-    // Resto del código...
 }
 
 

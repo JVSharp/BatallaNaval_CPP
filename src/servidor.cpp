@@ -30,7 +30,7 @@ private:
 class Game {
 public:
     Game() {
-        // Crear el tablero vacío
+        // Crear el tablero vacío 15x15
         board.resize(15, std::vector<char>(15, '.'));
 
         // Definir las embarcaciones
@@ -42,7 +42,7 @@ public:
         };
     }
 
-    void placeRandomShips() {
+    void placeRandomShips() { // Barcos de manera aleatoria.
         std::default_random_engine engine(static_cast<unsigned>(time(nullptr)));
         std::uniform_int_distribution<int> randomX(0, 14);
         std::uniform_int_distribution<int> randomY(0, 14);
@@ -63,12 +63,12 @@ public:
         }
     }
 
-    std::string processShot(const std::string& coords) {
+    std::string processShot(const std::string& coords) { // Procesamiento de disparo.
         std::stringstream ss(coords);
         int x, y;
         ss >> x >> y;
 
-        if (isValidShot(x, y)) {
+        if (isValidShot(x, y)) { // Si es un disparo válido.
             if (isHit(x, y)) {
                 board[y][x] = 'X';
                 if (isGameOver()) {
@@ -85,7 +85,7 @@ public:
         }
     }
 
-    std::string getPlayerBoard() const {
+    std::string getPlayerBoard() const {   //Obtenemos el tablero del jugador.
         std::stringstream ss;
 
         for (const auto& row : board) {
@@ -98,7 +98,7 @@ public:
         return ss.str();
     }
 
-private:
+private: // Colocacion de barcos.
     bool canPlaceShip(const Ship& ship, int startX, int startY, int orientation) const {
         int size = ship.getSize();
         if (orientation == 0) {  // Horizontal
@@ -162,14 +162,14 @@ private:
     std::vector<Ship> ships;
 };
 
-class Server {
+class Server { //Configuración del servidor.
 public:
     Server(int port) : port(port) {}
 
     int run() {
         WSADATA wsaData;
         if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            std::cerr << "Error: Failed to initialize winsock\n";
+            std::cerr << "Error: No se pudo iniciar winsock\n";
             return 1;
         }
 
@@ -201,7 +201,7 @@ private:
     SOCKET createServerSocket() {
         SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
         if (serverSocket == INVALID_SOCKET) {
-            std::cerr << "Error: Failed to create server socket\n";
+            std::cerr << "Error: Error al crear el server socket\n";
             return INVALID_SOCKET;
         }
 
@@ -211,13 +211,13 @@ private:
         serverAddr.sin_addr.s_addr = INADDR_ANY;
 
         if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
-            std::cerr << "Error: Failed to bind server socket\n";
+            std::cerr << "Error: Error al enlazar server socket\n";
             closesocket(serverSocket);
             return INVALID_SOCKET;
         }
 
         if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-            std::cerr << "Error: Failed to listen on server socket\n";
+            std::cerr << "Error: Error al escuchar server socket\n";
             closesocket(serverSocket);
             return INVALID_SOCKET;
         }
@@ -228,7 +228,7 @@ private:
     SOCKET acceptClientConnection(SOCKET serverSocket) {
         SOCKET clientSocket = accept(serverSocket, nullptr, nullptr);
         if (clientSocket == INVALID_SOCKET) {
-            std::cerr << "Error: Failed to accept client connection\n";
+            std::cerr << "Error: Error al escuchar la conexión del cliente\n";
             return INVALID_SOCKET;
         }
 
@@ -326,7 +326,7 @@ private:
 };
 
 int main() {
-    int port = 12345;
+    int port = 12345; //Puerto que asignaremos al servidor.
 
     Server server(port);
     return server.run();
